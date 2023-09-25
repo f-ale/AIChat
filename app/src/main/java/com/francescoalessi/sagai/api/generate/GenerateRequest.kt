@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class GenerateRequest(
     val prompt: String = "",
-    val max_new_tokens: Int = 550, // Max new tokens: TODO Let the user set it?
+    val max_new_tokens: Int = 50, // Max new tokens: TODO Let the user set it?
     val do_sample: Boolean = true,
     val temperature: Double = 0.44,
     val top_p: Double = 1.0,
@@ -24,7 +24,7 @@ data class GenerateRequest(
     val negative_prompt: String = "",
     val seed: Int = -1,
     val add_bos_token: Boolean = true,
-    val stopping_strings: List<String> = listOf("", ""),
+    val stopping_strings: List<String> = listOf(),
     val truncation_length: Int = 4096, // Max context size: TODO can we derive this from a network call?
     val ban_eos_token: Boolean = false,
     val skip_special_tokens: Boolean = true,

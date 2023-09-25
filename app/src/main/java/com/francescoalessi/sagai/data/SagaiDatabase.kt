@@ -7,7 +7,7 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import java.math.BigDecimal
 
-@Database(entities = [Character::class, Conversation::class, Message::class, TextGenerationHost::class], version = 3)
+@Database(entities = [Character::class, Conversation::class, Message::class, TextGenerationHost::class], version = 4)
 @TypeConverters(Converters::class)
 abstract class SagaiDatabase: RoomDatabase() {
     abstract fun messageDao(): MessageDao

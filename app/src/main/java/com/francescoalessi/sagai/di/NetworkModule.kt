@@ -5,16 +5,18 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+
 
 @InstallIn(SingletonComponent::class)
 @Module
-class TextGenerationModule {
+class TextGenerationApiModule {
     private val baseUrl = "http://10.0.2.2:5000"
 
     /*
@@ -22,14 +24,26 @@ class TextGenerationModule {
      */
     @Singleton
     @Provides
-    fun provideTextGenerationService(): TextGenerationService
+    fun provideTextGenerationService(okHttpClient: OkHttpClient): TextGenerationService
     {
+
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(Json.asConverterFactory(
                 "application/json".toMediaType()
             ))
+            .client(okHttpClient)
             .build()
             .create(TextGenerationService::class.java)
+    }
+
+    @Provides
+    fun provideOkHttpClient():OkHttpClient
+    {
+        return OkHttpClient.Builder()
+            .connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(1, TimeUnit.MINUTES)
+            .writeTimeout(1, TimeUnit.MINUTES)
+            .build()
     }
 }

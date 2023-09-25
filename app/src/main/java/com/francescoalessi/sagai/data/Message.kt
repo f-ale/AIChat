@@ -33,6 +33,7 @@ data class Message(
     val characterId:Int = -1,
     val conversationId:Int = -1,
     val content:String = "",
+    val tokens:Int = content.length/4, // TODO: Change tokenization estimate with real count
     val timestamp:Long,
 )
 
@@ -46,4 +47,6 @@ interface MessageDao {
     fun getAllMessagesForConversation(conversationId: Int): Flow<List<Message>>
     @Query("SELECT * FROM message WHERE conversationId = :conversationId ORDER BY timestamp DESC")
     fun getAllMessagesForConversationAsPagingSource(conversationId: Int): PagingSource<Int, Message>
+    @Query("SELECT * FROM message WHERE conversationId = :conversationId ORDER BY timestamp DESC LIMIT :amount")
+    suspend fun getLatestMessagesForConversation(conversationId: Int, amount:Int = 1): List<Message>
 }

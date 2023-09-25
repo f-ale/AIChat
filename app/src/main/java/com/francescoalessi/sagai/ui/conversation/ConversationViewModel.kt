@@ -27,7 +27,7 @@ class ConversationViewModel @Inject constructor(
     fun sendMessage(character: Character? = null, conversation: Conversation? = null, message:String) { // TODO: remove nullable types
         viewModelScope.launch {
             repository.sendMessage(
-                Character(0,"0","0",false),
+                Character(1,"Assistant","You are a helpful assistant.",false),
                 Conversation(0,0),
                 message
             )

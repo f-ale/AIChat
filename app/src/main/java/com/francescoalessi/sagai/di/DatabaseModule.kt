@@ -2,8 +2,9 @@ package com.francescoalessi.sagai.di
 
 import android.content.Context
 import androidx.room.Room
-import com.francescoalessi.sagai.data.MessageDao
 import com.francescoalessi.sagai.data.SagaiDatabase
+import com.francescoalessi.sagai.data.dao.ConversationDao
+import com.francescoalessi.sagai.data.dao.MessageDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,5 +27,8 @@ class DatabaseModule {
     }
     @Provides
     @Singleton
-    fun provideRecipeDao(sagaiDatabase: SagaiDatabase): MessageDao = sagaiDatabase.messageDao()
+    fun provideMessageDao(sagaiDatabase: SagaiDatabase): MessageDao = sagaiDatabase.messageDao()
+    @Provides
+    @Singleton
+    fun provideConversationDao(sagaiDatabase: SagaiDatabase): ConversationDao = sagaiDatabase.conversationDao()
 }

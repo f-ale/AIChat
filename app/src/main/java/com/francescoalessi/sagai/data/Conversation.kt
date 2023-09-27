@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 @Entity
 data class Conversation(
     @PrimaryKey(autoGenerate = true)
-    val id:Int = -1,
-    val characterId:Int = -1,
+    val id:Int = 0,
+    val characterId:Int = 0,
 )

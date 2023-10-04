@@ -49,7 +49,7 @@ class Repository @Inject constructor(
 
             db.withTransaction {
                 val prompt =
-                    "You are ${character.name}. Do not write replies as User. ${character.attributes}\n" +
+                    "You are ${character.name}. Do not write replies as User. ${character.name} is ${character.attributes}\n" +
                     pastMessages.joinToString(
                         separator = "\n",
                 ) { it ->
@@ -91,9 +91,10 @@ class Repository @Inject constructor(
         }
     }
 
+    fun getConversationWithCharacterAsFlow(conversationId: Int): Flow<ConversationWithCharacter> =
+        conversationDao.getConversationWithCharacterForIdAsFlow(conversationId)
     suspend fun getConversationWithCharacter(conversationId: Int): ConversationWithCharacter =
         conversationDao.getConversationWithCharacterForId(conversationId)
-
     fun getMessagesForConversation(conversationId: Int): Flow<List<Message>> =
         messageDao.getAllMessagesForConversation(conversationId)
 

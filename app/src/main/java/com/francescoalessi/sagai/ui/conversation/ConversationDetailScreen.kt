@@ -40,6 +40,7 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +50,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -63,6 +65,7 @@ fun ConversationDetailScreen(
     onBackPressed: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val conversation by viewModel.conversation.collectAsStateWithLifecycle(initialValue = null)
 
     // A surface container using the 'background' color from the theme
     Scaffold(
@@ -72,7 +75,7 @@ fun ConversationDetailScreen(
         contentWindowInsets = WindowInsets(0,0,0,0),
         topBar = {
             TopAppBar(
-                title = { Text("Assistant") },
+                title = { Text(conversation?.character?.name ?: "Assistant") },
                 navigationIcon = {
                     IconButton(onBackPressed) {
                         Icon(Icons.Default.ArrowBack, "Back")

@@ -3,8 +3,10 @@ package com.francescoalessi.sagai.di
 import android.content.Context
 import androidx.room.Room
 import com.francescoalessi.sagai.data.SagaiDatabase
+import com.francescoalessi.sagai.data.dao.CharacterDao
 import com.francescoalessi.sagai.data.dao.ConversationDao
 import com.francescoalessi.sagai.data.dao.MessageDao
+import com.francescoalessi.sagai.data.dao.SettingsDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,4 +33,10 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideConversationDao(sagaiDatabase: SagaiDatabase): ConversationDao = sagaiDatabase.conversationDao()
+    @Provides
+    @Singleton
+    fun provideSettingsDao(sagaiDatabase: SagaiDatabase): SettingsDao = sagaiDatabase.settingsDao()
+    @Provides
+    @Singleton
+    fun provideCharacterDao(sagaiDatabase: SagaiDatabase): CharacterDao = sagaiDatabase.characterDao()
 }

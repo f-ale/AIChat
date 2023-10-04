@@ -15,6 +15,7 @@ import com.francescoalessi.sagai.repositories.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.stateIn
@@ -29,22 +30,19 @@ class ConversationViewModel @Inject constructor(
     val conversationId:Int = savedStateHandle.get<Int>("conversationId") ?: 0
     val messages: Flow<PagingData<Message>> =
         repository.getPagedMessagesForConversation(conversationId).cachedIn(viewModelScope)
-    lateinit var conversation: ConversationWithCharacter
-    init {
-        viewModelScope.launch {
-            conversation =
-                repository.getConversationWithCharacter(conversationId)
-        }
-    }
+    val conversation: Flow<ConversationWithCharacter> =
+        repository.getConversationWithCharacterAsFlow(conversationId)
+
     // TODO: 27/09 Retrieve conversation and character
 
     // TODO: Assume conversation id is 0 and load all the messages for that convo
     fun sendMessage(message:String) { // TODO: remove nullable types
         viewModelScope.launch {
-            val conversation = conversation
+            val conversation = repository.getConversationWithCharacter(conversationId)
             Log.d("textgen", conversation.toString())
             repository.sendMessage(
-                conversation.character ?: Character(0, "", ""),
+                conversation.character
+                    ?: Character(0, "", ""),
                 conversation.conversation,
                 message
             )

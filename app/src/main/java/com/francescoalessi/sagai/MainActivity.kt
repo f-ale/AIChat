@@ -18,9 +18,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.francescoalessi.sagai.api.TextGenerationService
 import com.francescoalessi.sagai.ui.character.CharacterScreen
+import com.francescoalessi.sagai.ui.character.EditCharacterScreen
 import com.francescoalessi.sagai.ui.conversation.ConversationDetailScreen
 import com.francescoalessi.sagai.ui.conversation.ConversationViewModel
 import com.francescoalessi.sagai.ui.home.Home
+import com.francescoalessi.sagai.ui.navigation.AppDestinations
+import com.francescoalessi.sagai.ui.settings.SettingsScreen
 import com.francescoalessi.sagai.ui.theme.SagaiAIChatTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
@@ -73,7 +76,7 @@ fun SagaiApp() {
             ConversationDetailScreen(
                 viewModel = hiltViewModel(),
                 onBackPressed = {
-                    navController.navigate(AppDestinations.Home.name)
+                    navController.navigateUp()
                 }
             )
         }
@@ -87,15 +90,37 @@ fun SagaiApp() {
             }
         }
 
+        composable(route = AppDestinations.EditCharacter.name+"?characterId={characterId}",
+            arguments = listOf(
+                    navArgument("characterId") {
+                        type = NavType.IntType
+                        defaultValue = 0
+                    })
+        ) {
+           EditCharacterScreen(
+               onBackPressed = {
+                   navController.navigateUp()
+               },
+               viewModel = hiltViewModel()
+           )
+        }
+
         composable(route = AppDestinations.Character.name) {
-            CharacterScreen(navController)
+            CharacterScreen(
+                navController,
+                hiltViewModel(),
+                onCharacterClicked = { characterId ->
+                    navController.navigate(AppDestinations.EditCharacter.name+"?characterId=$characterId")
+                },
+                onNewCharacterClicked = {
+                    navController.navigate(AppDestinations.EditCharacter.name)
+                }
+            )
+        }
+
+        composable(route = AppDestinations.Settings.name) {
+            SettingsScreen(hiltViewModel(), navController)
         }
     }
 }
 
-enum class AppDestinations {
-    Home,
-    Conversation,
-    Character,
-    Settings
-}

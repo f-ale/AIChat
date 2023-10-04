@@ -1,6 +1,7 @@
 package com.francescoalessi.sagai.di
 
 import com.francescoalessi.sagai.api.TextGenerationService
+import com.francescoalessi.sagai.api.interceptors.DynamicUrlInterceptor
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -24,9 +25,9 @@ class TextGenerationApiModule {
      */
     @Singleton
     @Provides
-    fun provideTextGenerationService(okHttpClient: OkHttpClient): TextGenerationService
-    {
-
+    fun provideTextGenerationService(
+        okHttpClient: OkHttpClient
+    ): TextGenerationService {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(Json.asConverterFactory(
@@ -38,9 +39,11 @@ class TextGenerationApiModule {
     }
 
     @Provides
-    fun provideOkHttpClient():OkHttpClient
-    {
+    fun provideOkHttpClient(
+        dynamicUrlInterceptor: DynamicUrlInterceptor
+    ): OkHttpClient {
         return OkHttpClient.Builder()
+            .addInterceptor(dynamicUrlInterceptor)
             .connectTimeout(1, TimeUnit.MINUTES)
             .readTimeout(1, TimeUnit.MINUTES)
             .writeTimeout(1, TimeUnit.MINUTES)

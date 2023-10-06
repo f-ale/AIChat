@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,10 +22,12 @@ import androidx.compose.foundation.layout.imeNestedScroll
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,19 +45,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import coil.compose.AsyncImage
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -66,6 +77,7 @@ fun ConversationDetailScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val conversation by viewModel.conversation.collectAsStateWithLifecycle(initialValue = null)
+    var lastMessageSent by remember { mutableStateOf("") }
 
     // A surface container using the 'background' color from the theme
     Scaffold(
@@ -75,7 +87,20 @@ fun ConversationDetailScreen(
         contentWindowInsets = WindowInsets(0,0,0,0),
         topBar = {
             TopAppBar(
-                title = { Text(conversation?.character?.name ?: "Assistant") },
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        AsyncImage(
+                            model = conversation?.character?.image,
+                            contentDescription = "Avatar",
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(32.dp),
+                            contentScale = ContentScale.FillBounds,
+                        )
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Text(conversation?.character?.name ?: "Assistant")
+                    }
+                        },
                 navigationIcon = {
                     IconButton(onBackPressed) {
                         Icon(Icons.Default.ArrowBack, "Back")
@@ -96,8 +121,7 @@ fun ConversationDetailScreen(
             val listState = rememberLazyListState()
             LazyColumn(
                 modifier = Modifier
-                    .weight(1f)
-                    .imeNestedScroll(),
+                    .weight(1f),
                 contentPadding = PaddingValues(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Bottom),
                 reverseLayout = true,
@@ -105,10 +129,36 @@ fun ConversationDetailScreen(
             ) {
                 if (messages.loadState.refresh == LoadState.Loading) {
                     item {
-                        CircularProgressIndicator(
+                        BaseChatBubble(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .wrapContentWidth(Alignment.CenterHorizontally)
+                                .wrapContentWidth(Alignment.Start),
+                            content = {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        "${conversation?.character?.name} is typing...",
+                                        modifier = Modifier.padding(16.dp),
+                                        fontStyle = FontStyle.Italic
+                                    )
+                                    CircularProgressIndicator(
+                                        modifier = Modifier
+                                            .size(18.dp)
+                                    )
+                                }
+                            },
+                            secondaryContainerColor = false
+                        )
+                    }
+                    item {
+                        BaseChatBubble(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.End),
+                            content = {
+                                Text(lastMessageSent,
+                                    modifier = Modifier.padding(16.dp))
+                            },
+                            secondaryContainerColor = true
                         )
                     }
                 }
@@ -133,21 +183,11 @@ fun ConversationDetailScreen(
                         )
                     }
                 }
-
-                if (messages.loadState.append == LoadState.Loading) {
-                    item {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentWidth(Alignment.CenterHorizontally)
-                        )
-                    }
-                }
             }
             ChatInput { message ->
+                lastMessageSent = message
                 viewModel.sendMessage(message = message)
             }
-
         }
     }
 }

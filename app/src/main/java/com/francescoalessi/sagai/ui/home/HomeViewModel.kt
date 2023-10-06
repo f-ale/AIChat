@@ -27,4 +27,10 @@ class HomeViewModel @Inject constructor(
             conversationDao.insert(conversation)
         }
     }
+
+    fun deleteConversation(conversation: Conversation) {
+        viewModelScope.launch {
+            conversationDao.deleteConversation(conversation)
+        }
+    }
 }

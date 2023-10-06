@@ -13,16 +13,16 @@ sealed class BottomBarItem(
     data object Home : BottomBarItem(
         AppDestinations.Home.name,
         R.string.nav_chat,
-        R.drawable.ic_launcher_foreground
+        R.drawable.outline_chat_24
     )
     data object Character : BottomBarItem(
         AppDestinations.Character.name,
         R.string.nav_characters,
-        R.drawable.ic_launcher_foreground
+        R.drawable.baseline_person_24
     )
     data object Settings : BottomBarItem(
         AppDestinations.Settings.name,
         R.string.nav_settings,
-        R.drawable.ic_launcher_foreground
+        R.drawable.baseline_settings_24
     )
 }

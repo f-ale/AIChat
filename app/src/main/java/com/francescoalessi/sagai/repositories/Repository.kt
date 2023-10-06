@@ -29,9 +29,9 @@ class Repository @Inject constructor(
         try {
             val pastMessages = messageDao.getLatestMessagesForConversation(
                 conversation.id,
-                5
+                10
             // TODO: Calculate number of tokens and retrieve the right amount of messages
-            )
+            ).asReversed()
 
             if(message.isNotBlank())
             {
@@ -49,7 +49,10 @@ class Repository @Inject constructor(
 
             db.withTransaction {
                 val prompt =
-                    "You are ${character.name}. Do not write replies as User. ${character.name} is ${character.attributes}\n" +
+                    "You are ${character.name} and you are chatting online. "+
+                            "Write short responses like in a text chat. "+
+                            "Behave realistically like ${character.name}. "+
+                            "${character.name} is ${character.attributes}\n" +
                     pastMessages.joinToString(
                         separator = "\n",
                 ) { it ->
@@ -65,7 +68,7 @@ class Repository @Inject constructor(
                     GenerateRequest(
                         prompt = prompt,
                         stopping_strings = listOf(
-                            "${character}:",
+                            "${character.name}:",
                             "User:",
                             "Assistant:"
                         )
@@ -95,6 +98,11 @@ class Repository @Inject constructor(
         conversationDao.getConversationWithCharacterForIdAsFlow(conversationId)
     suspend fun getConversationWithCharacter(conversationId: Int): ConversationWithCharacter =
         conversationDao.getConversationWithCharacterForId(conversationId)
+
+    suspend fun deleteConversation(conversation: Conversation) =
+        conversationDao.deleteConversation(conversation)
+    suspend fun deleteConversationById(conversationId: Int) =
+        conversationDao.deleteConversationById(conversationId)
     fun getMessagesForConversation(conversationId: Int): Flow<List<Message>> =
         messageDao.getAllMessagesForConversation(conversationId)
 

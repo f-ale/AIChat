@@ -13,20 +13,28 @@ class DynamicUrlInterceptor @Inject constructor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val dynamicBaseUrl = getDynamicBaseUrl()
         val originalRequest = chain.request()
-        val newUrl = originalRequest.url.newBuilder()
-            .scheme(originalRequest.url.scheme)
-            .host(dynamicBaseUrl.ip4address)
-            .port(dynamicBaseUrl.ip4port.toInt())
-            .build()
-        val newRequest = originalRequest.newBuilder()
-            .url(newUrl)
-            .build()
-        return chain.proceed(newRequest)
+        if(dynamicBaseUrl != null)
+        {
+            val newUrl = originalRequest.url.newBuilder()
+                .scheme(originalRequest.url.scheme)
+                .host(dynamicBaseUrl.ip4address)
+                .port(dynamicBaseUrl.ip4port.toInt())
+                .build()
+            val newRequest = originalRequest.newBuilder()
+                .url(newUrl)
+                .build()
+            return chain.proceed(newRequest)
+        }
+        else
+        {
+            return chain.proceed(originalRequest)
+        }
+
     }
 
-    private fun getDynamicBaseUrl(): TextGenerationHost
+    private fun getDynamicBaseUrl(): TextGenerationHost?
     {
         return runBlocking { settingsRepository.getTextGenerationHost() }
-        // TODO: Verify data is valid
+        // TODO: Verify data is valid and textgenerationhost is not null
     }
 }

@@ -8,6 +8,7 @@ import com.francescoalessi.sagai.data.TextGenerationHost
 import com.francescoalessi.sagai.repositories.CharacterRepository
 import com.francescoalessi.sagai.repositories.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,7 +18,7 @@ class EditCharacterViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
     val characterId:Int = savedStateHandle.get<Int>("characterId") ?: 0
-    val character = characterRepository.getCharacterForId(characterId)
+    val character = characterRepository.getCharacterForId(characterId).filterNotNull()
     fun saveCharacter(character: Character) {
         viewModelScope.launch {
             characterRepository.saveCharacter(character)

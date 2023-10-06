@@ -5,7 +5,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class GenerateRequest(
     val prompt: String = "",
-    val max_new_tokens: Int = 50, // Max new tokens: TODO Let the user set it?
+    val auto_max_new_tokens: Boolean = true,
+    val preset: String = "None",
     val do_sample: Boolean = true,
     val temperature: Double = 0.44,
     val top_p: Double = 1.0,
@@ -18,7 +19,7 @@ data class GenerateRequest(
     val no_repeat_ngram_size: Int = 0,
     val num_beams: Int = 1,
     val penalty_alpha: Int = 0,
-    val length_penalty: Int = 1,
+    val length_penalty: Int = 2,
     val early_stopping: Boolean = false,
     val guidance_scale: Double = 1.0,
     val negative_prompt: String = "",

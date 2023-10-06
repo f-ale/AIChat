@@ -16,4 +16,6 @@ class CharacterRepository @Inject constructor(
         characterDao.getCharacterForId(characterId)
     suspend fun saveCharacter(character: Character) =
         characterDao.insert(character)
+    suspend fun deleteCharacter(character: Character) =
+        characterDao.deleteCharacter(character)
 }

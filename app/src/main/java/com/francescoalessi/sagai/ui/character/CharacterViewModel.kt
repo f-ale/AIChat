@@ -20,4 +20,10 @@ class CharacterViewModel @Inject constructor(
             characterRepository.saveCharacter(character)
         }
     }
+
+    fun deleteCharacter(character: Character) {
+        viewModelScope.launch {
+            characterRepository.deleteCharacter(character)
+        }
+    }
 }

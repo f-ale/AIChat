@@ -1,7 +1,5 @@
 package com.francescoalessi.sagai.ui.character
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,8 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.francescoalessi.sagai.data.Character
-import com.francescoalessi.sagai.data.Conversation
 import com.francescoalessi.sagai.ui.common.AppScaffold
 import com.francescoalessi.sagai.ui.home.ConversationListItem
 
@@ -47,9 +43,13 @@ fun CharacterScreen(
             items(characters.value) { character ->
                 ConversationListItem(
                     characterName = character.name,
+                    characterImage = character.image,
                     lastMessage = character.attributes,
-                    onConversationClicked = {
+                    onItemClicked = {
                         onCharacterClicked(character.id)
+                    },
+                    onItemDeleted = {
+                        characterViewModel.deleteCharacter(character)
                     }
                 )
             }

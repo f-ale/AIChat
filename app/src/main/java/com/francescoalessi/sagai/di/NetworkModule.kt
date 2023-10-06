@@ -15,6 +15,10 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 
+private val json = Json {
+    encodeDefaults = true
+}
+
 @InstallIn(SingletonComponent::class)
 @Module
 class TextGenerationApiModule {
@@ -30,7 +34,7 @@ class TextGenerationApiModule {
     ): TextGenerationService {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
-            .addConverterFactory(Json.asConverterFactory(
+            .addConverterFactory(json.asConverterFactory(
                 "application/json".toMediaType()
             ))
             .client(okHttpClient)

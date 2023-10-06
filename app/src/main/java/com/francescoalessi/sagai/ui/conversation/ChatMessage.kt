@@ -1,5 +1,6 @@
 package com.francescoalessi.sagai.ui.conversation
 
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -14,21 +15,35 @@ import com.francescoalessi.sagai.ui.theme.SagaiAIChatTheme
 
 @Composable
 fun ChatMessage(content: String, modifier: Modifier = Modifier, isUser:Boolean = false) {
+    BaseChatBubble(
+        modifier = modifier,
+        content = {
+            Text(
+                text = content,
+                modifier = Modifier.padding(16.dp)
+            )
+        },
+        secondaryContainerColor = isUser
+    )
+}
+@Composable
+fun BaseChatBubble(
+    content: @Composable ColumnScope.() -> Unit,
+    modifier: Modifier = Modifier,
+    secondaryContainerColor:Boolean
+) {
     Card(
         modifier = modifier.fillMaxWidth(0.8f),
         colors =
-        if(isUser)
-            CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+        if(secondaryContainerColor)
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer
+            )
         else
-            CardDefaults.cardColors()
-    ) {
-        Text(
-            text = content,
-            modifier = Modifier.padding(16.dp)
-        )
-    }
+            CardDefaults.cardColors(),
+        content = content
+    )
 }
-
 @Preview(showBackground = true)
 @Composable
 fun ChatMessagePreview() {

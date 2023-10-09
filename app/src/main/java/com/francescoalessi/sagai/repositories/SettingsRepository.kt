@@ -8,7 +8,7 @@ import javax.inject.Inject
 class SettingsRepository @Inject constructor(
     private val settingsDao: SettingsDao,
 ) {
-    suspend fun getTextGenerationHost(): TextGenerationHost =
+    suspend fun getTextGenerationHost(): TextGenerationHost? =
         settingsDao.getTextGenerationHost()
 
     suspend fun saveTextGenerationHost(textGenerationHost: TextGenerationHost) =

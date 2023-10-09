@@ -21,6 +21,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.francescoalessi.sagai.data.TextGenerationHost
+import com.francescoalessi.sagai.data.isValidHost
+import com.francescoalessi.sagai.data.isValidIP
+import com.francescoalessi.sagai.data.isValidPort
 import com.francescoalessi.sagai.ui.common.AppScaffold
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,10 +57,14 @@ fun SettingsScreen(
         ) {
             OutlinedTextField(
                 singleLine = true,
-                value = mutableHostFields.ip4address,
+                value = mutableHostFields.ipAddress,
+                isError = (
+                            !mutableHostFields.ipAddress.isValidIP()
+                            && mutableHostFields.ipAddress.isNotBlank()
+                        ),
                 onValueChange = { value ->
                     mutableHostFields = mutableHostFields.copy(
-                        ip4address = value
+                        ipAddress = value
                     )
             }, label = {
                 Text("IP Address")
@@ -65,20 +72,26 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 singleLine = true,
-                value = mutableHostFields.ip4port,
+                value = mutableHostFields.ipPort,
+                isError = (
+                            !mutableHostFields.ipPort.isValidPort()
+                            && mutableHostFields.ipPort.isNotBlank()
+                        ),
                 onValueChange = { value ->
                     mutableHostFields = mutableHostFields.copy(
-                    ip4port = value
+                    ipPort = value
                 )
             }, label = {
                 Text("Port")
-            })
+            },)
             Spacer(modifier = Modifier.height(8.dp))
             Button(onClick = {
-                viewModel.saveTextGenerationHost(
-                    mutableHostFields
-                )
-            }) {
+                    viewModel.saveTextGenerationHost(
+                        mutableHostFields
+                    )
+                },
+                enabled = mutableHostFields.isValidHost()
+            ) {
                 Text("Save")
             }
         }

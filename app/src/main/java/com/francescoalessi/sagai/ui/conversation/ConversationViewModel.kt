@@ -32,11 +32,7 @@ class ConversationViewModel @Inject constructor(
         repository.getPagedMessagesForConversation(conversationId).cachedIn(viewModelScope)
     val conversation: Flow<ConversationWithCharacter> =
         repository.getConversationWithCharacterAsFlow(conversationId)
-
-    // TODO: 27/09 Retrieve conversation and character
-
-    // TODO: Assume conversation id is 0 and load all the messages for that convo
-    fun sendMessage(message:String) { // TODO: remove nullable types
+    fun sendMessage(message:String) {
         viewModelScope.launch {
             val conversation = repository.getConversationWithCharacter(conversationId)
             Log.d("textgen", conversation.toString())

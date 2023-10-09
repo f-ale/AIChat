@@ -7,6 +7,7 @@ import com.francescoalessi.sagai.data.dao.CharacterDao
 import com.francescoalessi.sagai.data.dao.ConversationDao
 import com.francescoalessi.sagai.data.relations.ConversationWithMessagesAndCharacter
 import com.francescoalessi.sagai.repositories.CharacterRepository
+import com.francescoalessi.sagai.repositories.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -14,23 +15,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val conversationDao: ConversationDao, // TODO: Use repository
+    private val repository: Repository, // TODO: Use repository
     characterRepository: CharacterRepository
 ) : ViewModel() {
     val characters = characterRepository.getAllCharacters()
     fun getConversations(): Flow<List<ConversationWithMessagesAndCharacter>> {
-        return conversationDao.getAllConversationsWithMessages()
+        return repository.getAllConversationsWithMessagesAndCharacter()
     }
 
     fun insertConversation(conversation: Conversation) {
         viewModelScope.launch {
-            conversationDao.insert(conversation)
+            repository.insertConversation(conversation)
         }
     }
 
     fun deleteConversation(conversation: Conversation) {
         viewModelScope.launch {
-            conversationDao.deleteConversation(conversation)
+            repository.deleteConversation(conversation)
         }
     }
 }

@@ -127,7 +127,8 @@ fun ConversationDetailScreen(
                 reverseLayout = true,
                 state = listState
             ) {
-                if (messages.loadState.refresh == LoadState.Loading) {
+                if (messages.loadState.refresh == LoadState.Loading ||
+                    messages.loadState.append == LoadState.Loading) {
                     item {
                         BaseChatBubble(
                             modifier = Modifier

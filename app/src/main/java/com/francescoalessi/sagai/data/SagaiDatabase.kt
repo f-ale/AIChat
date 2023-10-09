@@ -11,7 +11,14 @@ import com.francescoalessi.sagai.data.dao.MessageDao
 import com.francescoalessi.sagai.data.dao.SettingsDao
 import java.math.BigDecimal
 
-@Database(entities = [Character::class, Conversation::class, Message::class, TextGenerationHost::class], version = 5)
+@Database(entities =
+    [
+        Character::class,
+        Conversation::class,
+        Message::class,
+        TextGenerationHost::class
+    ],
+    version = 6)
 @TypeConverters(Converters::class)
 abstract class SagaiDatabase: RoomDatabase() {
     abstract fun messageDao(): MessageDao

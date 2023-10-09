@@ -18,5 +18,5 @@ data class ConversationWithMessagesAndCharacter (
         parentColumn = "characterId",
         entityColumn = "id"
     )
-    val character: Character? // TODO: Make non nullable
+    val character: Character
 )

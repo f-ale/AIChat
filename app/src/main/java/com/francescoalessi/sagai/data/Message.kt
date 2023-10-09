@@ -12,7 +12,7 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Entity(
-    /*foreignKeys = [
+    foreignKeys = [
         ForeignKey(
             entity = Character::class,
             parentColumns = ["id"],
@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.Flow
             childColumns = ["conversationId"],
             onDelete = CASCADE // TODO: Review ondelete policy
         ),
-    ]*/
+    ]
 )
 data class Message(
     @PrimaryKey(autoGenerate = true)

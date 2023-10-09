@@ -12,12 +12,19 @@ import kotlinx.coroutines.flow.Flow
 interface MessageDao {
     @Insert
     suspend fun insert(message: Message)
+
     @Delete
     suspend fun delete(message: Message)
+
     @Query("SELECT * FROM message WHERE conversationId = :conversationId ORDER BY timestamp DESC")
     fun getAllMessagesForConversation(conversationId: Int): Flow<List<Message>>
+
     @Query("SELECT * FROM message WHERE conversationId = :conversationId ORDER BY timestamp DESC")
     fun getAllMessagesForConversationAsPagingSource(conversationId: Int): PagingSource<Int, Message>
+
     @Query("SELECT * FROM message WHERE conversationId = :conversationId ORDER BY timestamp DESC LIMIT :amount")
-    suspend fun getLatestMessagesForConversation(conversationId: Int, amount:Int = 1): List<Message>
+    suspend fun getLatestMessagesForConversation(
+        conversationId: Int,
+        amount: Int = 1
+    ): List<Message>
 }

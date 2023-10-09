@@ -14,6 +14,7 @@ import com.francescoalessi.sagai.data.SagaiDatabase
 import com.francescoalessi.sagai.data.dao.ConversationDao
 import com.francescoalessi.sagai.data.dao.MessageDao
 import com.francescoalessi.sagai.data.relations.ConversationWithCharacter
+import com.francescoalessi.sagai.data.relations.ConversationWithMessagesAndCharacter
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -23,15 +24,33 @@ class Repository @Inject constructor(
     private val messageDao: MessageDao,
     private val conversationDao: ConversationDao,
 ) {
+    private suspend fun getMessagesWithTokenLimit(conversationId: Int, tokenLimit: Int): List<Message> {
+        val messages = mutableListOf<Message>()
+        var totalTokens = 0
+
+        val allMessages = messageDao.getLatestMessagesForConversation(conversationId, 100)
+        for (message in allMessages) {
+            if (totalTokens + message.tokens < tokenLimit) {
+                messages.add(message)
+                totalTokens += message.tokens
+            } else {
+                break
+            }
+        }
+
+        return messages
+    }
+
+    suspend fun insertConversation(conversation: Conversation) {
+        conversationDao.insert(conversation)
+    }
+    fun getAllConversationsWithMessagesAndCharacter(): Flow<List<ConversationWithMessagesAndCharacter>> {
+        return conversationDao.getAllConversationsWithMessages()
+    }
     suspend fun sendMessage(character: Character, conversation: Conversation, message: String) {
-        Log.d("texgen", character.toString()+conversation.toString()+message.toString())
-        // TODO: Make non nullable
         try {
-            val pastMessages = messageDao.getLatestMessagesForConversation(
-                conversation.id,
-                10
-            // TODO: Calculate number of tokens and retrieve the right amount of messages
-            ).asReversed()
+            val pastMessages =
+                getMessagesWithTokenLimit(conversation.id, 4096).asReversed()
 
             if(message.isNotBlank())
             {
@@ -56,12 +75,12 @@ class Repository @Inject constructor(
                     pastMessages.joinToString(
                         separator = "\n",
                 ) { it ->
-                    val name = if(it.characterId == 0) "User" else character.name
+                    val name = if(it.characterId == -1) "User" else character.name
                     "${name}:\n${it.content}\n"
                 } + if(message.isNotEmpty())
                             "User:\n${message}\n${character.name}:"
                         else
-                            ""
+                            "${character.name}:"
 
                 Log.d("texgen", prompt)
                 val generatedText = textGenerationService.generateText(

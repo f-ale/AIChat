@@ -17,7 +17,7 @@ interface SettingsDao {
     )
     suspend fun insert(textGenerationHost: TextGenerationHost)
     @Query("SELECT * FROM textgenerationhost LIMIT 1")
-    suspend fun getTextGenerationHost(): TextGenerationHost
+    suspend fun getTextGenerationHost(): TextGenerationHost?
     @Query("SELECT * FROM textgenerationhost LIMIT 1")
     fun getTextGenerationHostAsFlow(): Flow<TextGenerationHost>
 }

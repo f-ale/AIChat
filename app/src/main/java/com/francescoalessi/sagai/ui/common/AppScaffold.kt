@@ -6,7 +6,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import com.francescoalessi.sagai.R
 import com.francescoalessi.sagai.ui.navigation.BottomNavigationBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -14,7 +16,7 @@ import com.francescoalessi.sagai.ui.navigation.BottomNavigationBar
 fun AppScaffold(navController: NavController,
                 topBar: @Composable () -> Unit = {
                     CenterAlignedTopAppBar(
-                        title = { Text("Sagai AI Chat") },
+                        title = { Text(stringResource(R.string.app_name)) },
                     )
                 },
                 floatingActionButton: @Composable () -> Unit = {},

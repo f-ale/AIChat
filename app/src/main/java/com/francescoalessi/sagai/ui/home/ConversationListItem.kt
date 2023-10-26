@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,9 +28,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.francescoalessi.sagai.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -45,7 +46,7 @@ fun ConversationListItem(
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     DropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
-        DropdownMenuItem(text = { Text("Delete") }, onClick = {
+        DropdownMenuItem(text = { Text(stringResource(R.string.delete)) }, onClick = {
             onItemDeleted()
             isExpanded = false
         })

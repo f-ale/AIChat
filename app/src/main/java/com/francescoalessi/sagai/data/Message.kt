@@ -1,17 +1,9 @@
 package com.francescoalessi.sagai.data
 
-import androidx.paging.PagingSource
-import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.ForeignKey.Companion.CASCADE
-import androidx.room.Insert
 import androidx.room.PrimaryKey
-import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 
-@Entity(
+@Entity(/*
     foreignKeys = [
         ForeignKey(
             entity = Character::class,
@@ -25,7 +17,7 @@ import kotlinx.coroutines.flow.Flow
             childColumns = ["conversationId"],
             onDelete = CASCADE // TODO: Review ondelete policy
         ),
-    ]
+    ]*/
 )
 data class Message(
     @PrimaryKey(autoGenerate = true)

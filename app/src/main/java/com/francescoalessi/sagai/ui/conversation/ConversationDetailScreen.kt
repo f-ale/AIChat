@@ -8,7 +8,6 @@ import androidx.compose.animation.core.animateDecay
 import androidx.compose.animation.core.animateTo
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.rememberSplineBasedDecay
-import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imeNestedScroll
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -26,7 +24,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -42,12 +39,9 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,16 +51,15 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
+import com.francescoalessi.sagai.R
 import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -91,19 +84,19 @@ fun ConversationDetailScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         AsyncImage(
                             model = conversation?.character?.image,
-                            contentDescription = "Avatar",
+                            contentDescription = stringResource(R.string.avatar),
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .size(32.dp),
                             contentScale = ContentScale.FillBounds,
                         )
                         Spacer(modifier = Modifier.size(8.dp))
-                        Text(conversation?.character?.name ?: "Assistant")
+                        Text(conversation?.character?.name ?: stringResource(R.string.no_name))
                     }
                         },
                 navigationIcon = {
                     IconButton(onBackPressed) {
-                        Icon(Icons.Default.ArrowBack, "Back")
+                        Icon(Icons.Default.ArrowBack, stringResource(R.string.back))
                     }
                 },
                 scrollBehavior = scrollBehavior
@@ -137,7 +130,11 @@ fun ConversationDetailScreen(
                             content = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
-                                        "${conversation?.character?.name} is typing...",
+                                        text = stringResource(
+                                            R.string.is_typing,
+                                            conversation?.character?.name
+                                                ?: stringResource(R.string.no_name)
+                                        ),
                                         modifier = Modifier.padding(16.dp),
                                         fontStyle = FontStyle.Italic
                                     )

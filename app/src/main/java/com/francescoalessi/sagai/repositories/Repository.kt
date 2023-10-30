@@ -5,8 +5,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.room.withTransaction
+import com.francescoalessi.sagai.api.ApiResponse
 import com.francescoalessi.sagai.api.TextGenerationService
 import com.francescoalessi.sagai.api.generate.GenerateRequest
+import com.francescoalessi.sagai.api.generate.GenerateResponse
 import com.francescoalessi.sagai.data.Character
 import com.francescoalessi.sagai.data.Conversation
 import com.francescoalessi.sagai.data.Message
@@ -62,8 +64,13 @@ class Repository @Inject constructor(
 
     /*
         A suspending function to send a message in a AI generated chat using the given character.
-     */
-    suspend fun sendMessage(character: Character, conversation: Conversation, message: String) {
+     */ // TODO: abstract the prompt building logic; use workmanager to handle long running tasks
+    suspend fun sendMessage(
+        character: Character,
+        conversation: Conversation,
+        message: String
+    ): ApiResponse<GenerateResponse> {
+        var apiResponse: ApiResponse<GenerateResponse> = ApiResponse.Error(Throwable("Unknow error"))
         try {
             // Fetch the previous messages up to a token limit, and reverse the list to get the recent messages first.
             val pastMessages =
@@ -105,7 +112,7 @@ class Repository @Inject constructor(
 
                 Log.d("texgen", prompt)
                 // Generate a response based on the prompt using the text generation service.
-                val generatedText = textGenerationService.generateText(
+                val response = textGenerationService.generateText(
                     GenerateRequest(
                         prompt = prompt,
                         stopping_strings = listOf(
@@ -114,7 +121,9 @@ class Repository @Inject constructor(
                             "Assistant:"
                         )
                     )
-                ).results.joinToString { it.text }.trim()
+                )
+
+                val generatedText = response.results.joinToString { it.text }.trim()
 
                 // Check if the generated text is not blank.
                 if(generatedText.isNotBlank())
@@ -131,10 +140,14 @@ class Repository @Inject constructor(
                         )
                     )
                 }
+
+                apiResponse = ApiResponse.Success(response)
             }
         } catch (e:Throwable) { // TODO: Use a different approach to error handling
             Log.e("texgen", e.toString())
+            apiResponse = ApiResponse.Error(e)
         }
+        return apiResponse
     }
 
     fun getConversationWithCharacterAsFlow(conversationId: Int): Flow<ConversationWithCharacter> =

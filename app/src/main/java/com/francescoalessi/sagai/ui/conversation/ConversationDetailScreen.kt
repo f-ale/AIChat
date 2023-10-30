@@ -32,16 +32,22 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,7 +62,6 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.francescoalessi.sagai.R
@@ -72,11 +77,28 @@ fun ConversationDetailScreen(
     val conversation by viewModel.conversation.collectAsStateWithLifecycle(initialValue = null)
     var lastMessageSent by remember { mutableStateOf("") }
 
+    val textGenerationState by viewModel.textGenerationState.collectAsStateWithLifecycle(
+        initialValue = UiState.Idle
+    )
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    
+    if(textGenerationState is UiState.Error)
+    {
+        LaunchedEffect(textGenerationState) {
+            snackbarHostState.showSnackbar(
+                "Couldn't generate a response.",
+                withDismissAction = true)
+        }
+    }
+
     // A surface container using the 'background' color from the theme
     Scaffold(
         modifier = Modifier
             .imePadding()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         contentWindowInsets = WindowInsets(0,0,0,0),
         topBar = {
             TopAppBar(
@@ -105,6 +127,9 @@ fun ConversationDetailScreen(
     ) { paddingValues ->
         val messages =
             viewModel.messages.collectAsLazyPagingItems()
+        ErrorSnackbar(uiState = textGenerationState) {
+            viewModel.dismissError()  // Function to reset the error state
+        }
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -120,8 +145,8 @@ fun ConversationDetailScreen(
                 reverseLayout = true,
                 state = listState
             ) {
-                if (messages.loadState.refresh == LoadState.Loading ||
-                    messages.loadState.append == LoadState.Loading) {
+                if (textGenerationState is UiState.Loading /*messages.loadState.refresh == LoadState.Loading ||
+                    messages.loadState.append == LoadState.Loading*/) {
                     item {
                         BaseChatBubble(
                             modifier = Modifier
@@ -182,10 +207,29 @@ fun ConversationDetailScreen(
                     }
                 }
             }
-            ChatInput { message ->
+            ChatInput(sendEnabled = textGenerationState !is UiState.Loading) { message ->
                 lastMessageSent = message
                 viewModel.sendMessage(message = message)
             }
+        }
+    }
+}
+
+@Composable
+fun ErrorSnackbar(
+    uiState: UiState,
+    onDismiss: () -> Unit
+) {
+    if (uiState is UiState.Error) {
+        Snackbar(
+            action = {
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(R.string.dismiss))
+                }
+            },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(uiState.message)
         }
     }
 }

@@ -111,7 +111,6 @@ fun Home(
             }
         }
 
-
         if(isNewConversationDialogOpen)
         {
             var selectedCharacter by remember { mutableStateOf(Character(0,"","")) }

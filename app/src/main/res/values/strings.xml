@@ -30,4 +30,5 @@
     <string name="ip_address">IP Address</string>
     <string name="port">Port</string>
     <string name="create_a_character_to_get_started">Create a Character to get started!</string>
+    <string name="dismiss">Dismiss</string>
 </resources>

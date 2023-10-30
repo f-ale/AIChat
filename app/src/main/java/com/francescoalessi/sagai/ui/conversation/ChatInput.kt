@@ -21,7 +21,7 @@ import com.francescoalessi.sagai.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatInput(modifier: Modifier = Modifier, onSend: (message:String) -> Unit)
+fun ChatInput(modifier: Modifier = Modifier, sendEnabled: Boolean, onSend: (message:String) -> Unit)
 {
     var field by remember { mutableStateOf("") }
         TextField(
@@ -37,6 +37,7 @@ fun ChatInput(modifier: Modifier = Modifier, onSend: (message:String) -> Unit)
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
             trailingIcon = {
                 IconButton(
+                    enabled = sendEnabled,
                     onClick = {
                         onSend(field)
                         field = ""

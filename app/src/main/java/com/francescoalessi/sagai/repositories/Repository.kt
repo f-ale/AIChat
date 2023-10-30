@@ -24,20 +24,32 @@ class Repository @Inject constructor(
     private val messageDao: MessageDao,
     private val conversationDao: ConversationDao,
 ) {
+    /*
+        Fetch chat messages for a given conversation until a token limit is reached.
+     */
     private suspend fun getMessagesWithTokenLimit(conversationId: Int, tokenLimit: Int): List<Message> {
+        // A list to store messages that fit within the token limit.
         val messages = mutableListOf<Message>()
+        // Variable to keep track of the accumulated tokens from the fetched messages.
         var totalTokens = 0
 
+        // Retrieve the latest 100 messages from the specified conversation.
+        // TODO: change hardcoded limit?
         val allMessages = messageDao.getLatestMessagesForConversation(conversationId, 100)
+
+        // Iterate through each message.
         for (message in allMessages) {
+            // If adding the message doesn't exceed the token limit, include it in the list.
             if (totalTokens + message.tokens < tokenLimit) {
                 messages.add(message)
                 totalTokens += message.tokens
             } else {
+                // Break the loop once the token limit is reached.
                 break
             }
         }
 
+        // Return the messages that fit within the token limit.
         return messages
     }
 
@@ -47,13 +59,20 @@ class Repository @Inject constructor(
     fun getAllConversationsWithMessagesAndCharacter(): Flow<List<ConversationWithMessagesAndCharacter>> {
         return conversationDao.getAllConversationsWithMessages()
     }
+
+    /*
+        A suspending function to send a message in a AI generated chat using the given character.
+     */
     suspend fun sendMessage(character: Character, conversation: Conversation, message: String) {
         try {
+            // Fetch the previous messages up to a token limit, and reverse the list to get the recent messages first.
             val pastMessages =
                 getMessagesWithTokenLimit(conversation.id, 4096).asReversed()
 
+            // Check if the message is not blank.
             if(message.isNotBlank())
             {
+                // Insert the user's message into the database.
                 messageDao.insert(
                     Message(
                         null,
@@ -66,7 +85,9 @@ class Repository @Inject constructor(
                 )
             }
 
+            // Begin a database transaction to allow for rollbacks in case of errors.
             db.withTransaction {
+                // Construct the prompt for the text generation service using the character's information and past messages.
                 val prompt =
                     "You are ${character.name} and you are chatting online. "+
                             "Write short responses like in a text chat. "+
@@ -83,6 +104,7 @@ class Repository @Inject constructor(
                             "${character.name}:"
 
                 Log.d("texgen", prompt)
+                // Generate a response based on the prompt using the text generation service.
                 val generatedText = textGenerationService.generateText(
                     GenerateRequest(
                         prompt = prompt,
@@ -94,8 +116,10 @@ class Repository @Inject constructor(
                     )
                 ).results.joinToString { it.text }.trim()
 
+                // Check if the generated text is not blank.
                 if(generatedText.isNotBlank())
                 {
+                    // Insert the generated message into the database.
                     messageDao.insert(
                         Message(
                             id = null,

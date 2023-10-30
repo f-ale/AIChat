@@ -1,4 +1,4 @@
-package com.francescoalessi.sagai.ui.home
+package com.francescoalessi.sagai.ui.chats
 
 import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi

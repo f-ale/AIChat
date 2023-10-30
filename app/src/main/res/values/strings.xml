@@ -29,4 +29,5 @@
     <string name="text_generation_webui_api_endpoint">Text Generation WebUI API endpoint</string>
     <string name="ip_address">IP Address</string>
     <string name="port">Port</string>
+    <string name="create_a_character_to_get_started">Create a Character to get started!</string>
 </resources>

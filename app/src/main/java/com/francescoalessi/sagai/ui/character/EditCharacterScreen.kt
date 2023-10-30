@@ -6,10 +6,12 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -31,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -98,6 +101,9 @@ fun EditCharacterScreen(
                 contentScale = ContentScale.FillBounds,
             )
             OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
                 value = characterField.name,
                 onValueChange = { value ->
                     characterField =
@@ -105,24 +111,35 @@ fun EditCharacterScreen(
                 },
                 label = {
                     Text(stringResource(R.string.character_name))
-                }
+                },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
             )
             OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
                 value = characterField.attributes,
                 onValueChange = { value ->
                     characterField =
                         characterField.copy(attributes = value)
                 },
                 label = {
-                    Text(
-                        if(characterField.attributes.isBlank()) {
-                            stringResource(R.string.description)
-                        } else {
-                            stringResource(R.string.character_is, characterField.name)
-                        }
-                    )
-                })
-            Button(onClick = {
+                        Text(
+                            if(characterField.attributes.isBlank()) {
+                                stringResource(R.string.description)
+                            } else {
+                                stringResource(R.string.character_is, characterField.name)
+                            }
+                        )
+                },
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Button(
+                enabled = characterField.name.isNotBlank()
+                        && characterField.attributes.isNotBlank(),
+                onClick = {
                 viewModel.saveCharacter(Character(
                     id = characterField.id,
                     name = characterField.name,

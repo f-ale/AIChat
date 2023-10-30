@@ -6,12 +6,12 @@ import com.francescoalessi.sagai.repositories.SettingsRepository
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 class DynamicUrlInterceptor @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) : Interceptor {
+    // TODO: Also let user choose between http and https
     override fun intercept(chain: Interceptor.Chain): Response {
         val dynamicBaseUrl = getDynamicBaseUrl()
         val originalRequest = chain.request()

@@ -1,10 +1,8 @@
-package com.francescoalessi.sagai.ui.home
+package com.francescoalessi.sagai.ui.chats
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.francescoalessi.sagai.data.Conversation
-import com.francescoalessi.sagai.data.dao.CharacterDao
-import com.francescoalessi.sagai.data.dao.ConversationDao
 import com.francescoalessi.sagai.data.relations.ConversationWithMessagesAndCharacter
 import com.francescoalessi.sagai.repositories.CharacterRepository
 import com.francescoalessi.sagai.repositories.Repository
@@ -14,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class ChatsViewModel @Inject constructor(
     private val repository: Repository, // TODO: Use repository
     characterRepository: CharacterRepository
 ) : ViewModel() {

@@ -1,10 +1,12 @@
-package com.francescoalessi.sagai.ui.home
+package com.francescoalessi.sagai.ui.chats
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -27,7 +29,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.francescoalessi.sagai.R
@@ -38,7 +42,7 @@ import com.francescoalessi.sagai.ui.common.AppScaffold
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(
-    viewModel: HomeViewModel,
+    viewModel: ChatsViewModel,
     navController: NavController,
     onConversationClicked: (conversationId:Int) -> Unit = {},
 ) {
@@ -93,7 +97,17 @@ fun Home(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
+                Icon(
+                    painterResource(id = R.drawable.conversations),
+                    stringResource(R.string.no_characters_yet),
+                    modifier = Modifier.size(156.dp)
+                )
                 Text(stringResource(R.string.no_conversations_yet))
+                if(characters.isEmpty())
+                {
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Text(stringResource(R.string.create_a_character_to_get_started))
+                }
             }
         }
 

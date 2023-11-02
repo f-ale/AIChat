@@ -25,6 +25,7 @@ abstract class SagaiDatabase: RoomDatabase() {
     abstract fun settingsDao(): SettingsDao
     abstract fun characterDao(): CharacterDao
 }
+
 class Converters {
     @TypeConverter
     fun uriFromString(value: String?): Uri? {

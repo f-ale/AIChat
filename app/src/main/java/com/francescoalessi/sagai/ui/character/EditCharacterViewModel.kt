@@ -4,9 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.francescoalessi.sagai.data.Character
-import com.francescoalessi.sagai.data.TextGenerationHost
 import com.francescoalessi.sagai.repositories.CharacterRepository
-import com.francescoalessi.sagai.repositories.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
@@ -22,6 +20,8 @@ class EditCharacterViewModel @Inject constructor(
     fun saveCharacter(character: Character) {
         viewModelScope.launch {
             characterRepository.saveCharacter(character)
+            // TODO: Copy image to local storage
         }
     }
+
 }

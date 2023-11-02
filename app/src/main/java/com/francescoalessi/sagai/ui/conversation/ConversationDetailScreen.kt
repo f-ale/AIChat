@@ -137,6 +137,7 @@ fun ConversationDetailScreen(
                 .navigationBarsPadding()
         ) {
             val listState = rememberLazyListState()
+
             LazyColumn(
                 modifier = Modifier
                     .weight(1f),
@@ -172,22 +173,24 @@ fun ConversationDetailScreen(
                             secondaryContainerColor = false
                         )
                     }
-                    item {
-                        BaseChatBubble(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentWidth(Alignment.End),
-                            content = {
-                                Text(lastMessageSent,
-                                    modifier = Modifier.padding(16.dp))
-                            },
-                            secondaryContainerColor = true
-                        )
+                    if(lastMessageSent.isNotBlank()) {
+                        item {
+                            BaseChatBubble(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.End),
+                                content = {
+                                    Text(lastMessageSent,
+                                        modifier = Modifier.padding(16.dp))
+                                },
+                                secondaryContainerColor = true
+                            )
+                        }
                     }
                 }
 
                 items(
-                    count = messages.itemCount
+                    count = messages.itemCount,
                 ) { index ->
                     val item = messages[index]
                     item?.let {

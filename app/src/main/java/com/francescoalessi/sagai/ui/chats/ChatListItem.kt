@@ -45,12 +45,7 @@ fun ConversationListItem(
     onItemDeleted: () -> Unit,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
-    DropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
-        DropdownMenuItem(text = { Text(stringResource(R.string.delete)) }, onClick = {
-            onItemDeleted()
-            isExpanded = false
-        })
-    }
+
     Row(verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
@@ -62,6 +57,12 @@ fun ConversationListItem(
             )
             .padding(vertical = 4.dp, horizontal = 2.dp)
     ) {
+        DropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
+            DropdownMenuItem(text = { Text(stringResource(R.string.delete)) }, onClick = {
+                onItemDeleted()
+                isExpanded = false
+            })
+        }
         Spacer(modifier = Modifier.size(4.dp))
         if(characterImage != null)
         {

@@ -34,9 +34,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.francescoalessi.parla.R
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -49,8 +51,6 @@ fun ConversationListItem(
     onItemClicked: () -> Unit,
     onItemDeleted: () -> Unit,
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
-
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -66,11 +66,13 @@ fun ConversationListItem(
                 modifier = Modifier
                     .clickable {
                         onItemDeleted()
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                showBottomSheet = false
+                        scope
+                            .launch { sheetState.hide() }
+                            .invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    showBottomSheet = false
+                                }
                             }
-                        }
                     }
                     .padding(16.dp)
                     .fillMaxWidth(),
@@ -84,11 +86,13 @@ fun ConversationListItem(
             Row(
                 modifier = Modifier
                     .clickable {
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                showBottomSheet = false
+                        scope
+                            .launch { sheetState.hide() }
+                            .invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    showBottomSheet = false
+                                }
                             }
-                        }
                     }
                     .padding(16.dp)
                     .fillMaxWidth(),
@@ -123,6 +127,7 @@ fun ConversationListItem(
                     .clip(CircleShape)
                     .size(48.dp),
                 contentScale = ContentScale.FillBounds,
+                placeholder = painterResource(id = R.drawable.baseline_account_circle_24)
             )
         }
         else {

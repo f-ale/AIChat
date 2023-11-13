@@ -3,6 +3,12 @@ package com.francescoalessi.parla
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -67,7 +73,13 @@ fun SagaiApp() {
                     navArgument("conversationId") {
                         type = NavType.IntType
                     }
-            )
+            ),
+            enterTransition = {
+                slideInVertically { -it }
+            },
+            exitTransition = {
+                slideOutVertically { -it }
+            }
         ) {
             ConversationDetailScreen(
                 viewModel = hiltViewModel(),
@@ -77,7 +89,29 @@ fun SagaiApp() {
             )
         }
 
-        composable(route = AppDestinations.Home.name) {
+        composable(
+            route = AppDestinations.Home.name,
+            enterTransition = {
+                when (initialState.destination.route) {
+                    AppDestinations.Settings.name, AppDestinations.Character.name ->
+                        slideInHorizontally(
+                            initialOffsetX = { fullWidth ->
+                                -fullWidth
+                            }
+                        )
+
+                    else -> fadeIn()
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    AppDestinations.Settings.name, AppDestinations.Character.name ->
+                        slideOutHorizontally { -it }
+
+                    else -> fadeOut()
+                }
+            }
+        ) {
             Home(
                 viewModel = hiltViewModel(),
                 navController = navController
@@ -86,12 +120,19 @@ fun SagaiApp() {
             }
         }
 
-        composable(route = AppDestinations.EditCharacter.name+"?characterId={characterId}",
+        composable(
+            route = AppDestinations.EditCharacter.name+"?characterId={characterId}",
             arguments = listOf(
                     navArgument("characterId") {
                         type = NavType.IntType
                         defaultValue = 0
-                    })
+                    }),
+            enterTransition = {
+                slideInVertically { -it } // TODO: Choose better transition
+            },
+            exitTransition = {
+                slideOutVertically { -it }
+            }
         ) {
            EditCharacterScreen(
                onBackPressed = {
@@ -101,7 +142,40 @@ fun SagaiApp() {
            )
         }
 
-        composable(route = AppDestinations.Character.name) {
+        composable(
+            route = AppDestinations.Character.name,
+            enterTransition = {
+                when (initialState.destination.route) {
+                    AppDestinations.Home.name ->
+                        slideInHorizontally(
+                            initialOffsetX = { fullWidth ->
+                                fullWidth
+                            }
+                        )
+
+                    AppDestinations.Settings.name ->
+                        slideInHorizontally(
+                            initialOffsetX = { fullWidth ->
+                                -fullWidth
+                            }
+                        )
+
+                    else -> fadeIn()
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    AppDestinations.Settings.name ->
+                        slideOutHorizontally { -it }
+
+                    AppDestinations.Home.name ->
+                        slideOutHorizontally { it }
+
+
+                    else -> fadeOut()
+                }
+            }
+        ) {
             CharacterScreen(
                 navController,
                 hiltViewModel(),
@@ -114,7 +188,29 @@ fun SagaiApp() {
             )
         }
 
-        composable(route = AppDestinations.Settings.name) {
+        composable(
+            route = AppDestinations.Settings.name,
+            enterTransition = {
+                when (initialState.destination.route) {
+                    AppDestinations.Home.name, AppDestinations.Character.name ->
+                        slideInHorizontally(
+                            initialOffsetX = { fullWidth ->
+                                fullWidth
+                            }
+                        )
+
+                    else -> fadeIn()
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    AppDestinations.Home.name, AppDestinations.Character.name ->
+                        slideOutHorizontally { it }
+
+                    else -> fadeOut()
+                }
+            }
+        ) {
             SettingsScreen(hiltViewModel(), navController)
         }
     }

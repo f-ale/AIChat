@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sagai</string>
+    <string name="app_name">Parla AI Chat</string>
     <string name="nav_chat">Chats</string>
     <string name="nav_characters">Characters</string>
     <string name="nav_settings">Settings</string>

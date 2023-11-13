@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Sagai AI Chat"
+rootProject.name = "Parla AI Chat"
 include(":app")

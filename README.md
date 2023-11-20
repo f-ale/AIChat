@@ -1,7 +1,8 @@
 <img src="app/src/main/res/mipmap-xxhdpi/ic_launcher.webp" align="left"
 width="100">
 # Parla AI Chat
-<img src="https://github.com/f-ale/AIChat/assets/56679557/4e4d30ef-efb0-4d23-8c2e-729fa85e5ad7" >
+
+<img src="https://github.com/f-ale/AIChat/assets/56679557/1be26f13-5346-45ac-83bc-085c06d7c38b" >
 Parla lets you chat with local LLMs running on your local network by creating your own characters (or using the default ones!) by interfacing with oobabooga's text-generation-webui API.
 
 Parla is built with Jetpack Compose and Android Jetpack following the MVVM design pattern.

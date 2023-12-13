@@ -93,6 +93,7 @@ dependencies {
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
     // KotlinX Serialization JSON
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
@@ -103,7 +104,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
 
     // Room DB
-    val roomVersion = "2.6.0"
+    val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
@@ -112,7 +113,6 @@ dependencies {
     implementation("androidx.room:room-paging:$roomVersion")
 
     // Lifecycle
-
     val lifecycleVersion = "2.6.2"
     val archVersion = "2.2.0"
 
@@ -143,6 +143,23 @@ dependencies {
     testImplementation("androidx.paging:paging-common-ktx:$pagingVersion")
     // optional - Jetpack Compose integration
     implementation("androidx.paging:paging-compose:3.2.1")
+
+    // WorkManager
+
+    val workVersion = "2.9.0"
+
+    // Kotlin + coroutines
+    implementation("androidx.work:work-runtime-ktx:$workVersion")
+    // optional - GCMNetworkManager support
+    implementation("androidx.work:work-gcm:$workVersion")
+    // optional - Test helpers
+    androidTestImplementation("androidx.work:work-testing:$workVersion")
+    // optional - Multiprocess support
+    implementation ("androidx.work:work-multiprocess:$workVersion")
+
+    implementation("androidx.hilt:hilt-work:1.1.0")
+    // When using Kotlin.
+    kapt("androidx.hilt:hilt-compiler:1.1.0")
 
 }
 

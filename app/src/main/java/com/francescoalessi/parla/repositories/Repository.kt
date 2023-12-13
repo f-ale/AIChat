@@ -70,7 +70,8 @@ class Repository @Inject constructor(
         conversation: Conversation,
         message: String
     ): ApiResponse<GenerateResponse> {
-        var apiResponse: ApiResponse<GenerateResponse> = ApiResponse.Error(Throwable("Unknow error"))
+
+        var apiResponse: ApiResponse<GenerateResponse> = ApiResponse.Error(Throwable("Unknown error"))
         try {
             // Fetch the previous messages up to a token limit, and reverse the list to get the recent messages first.
             val pastMessages =
@@ -115,7 +116,7 @@ class Repository @Inject constructor(
                 val response = textGenerationService.generateText(
                     GenerateRequest(
                         prompt = prompt,
-                        stopping_strings = listOf(
+                        stop = listOf(
                             "${character.name}:",
                             "User:",
                             "Assistant:"
@@ -123,7 +124,8 @@ class Repository @Inject constructor(
                     )
                 )
 
-                val generatedText = response.results.joinToString { it.text }.trim()
+                val generatedText = response.choices.joinToString { it.text }.trim()
+                val tokens = response.usage.completion_tokens
 
                 // Check if the generated text is not blank.
                 if(generatedText.isNotBlank())
@@ -136,7 +138,7 @@ class Repository @Inject constructor(
                             conversationId = conversation.id,
                             content = generatedText,
                             timestamp = System.currentTimeMillis(),
-                            tokens = generatedText.length/4, // TODO: Change simplified token calculation
+                            tokens = tokens,
                         )
                     )
                 }

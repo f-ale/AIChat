@@ -12,12 +12,12 @@ interface TextGenerationService
     /*
      *  Defines the queries to retrieve results from the HN API
      */
-    @POST("/api/v1/generate")
+    @POST("/v1/completions")
     suspend fun generateText(
         @Body request: GenerateRequest
     ): GenerateResponse
 
-    @POST("/api/v1/model")
+    @POST("/v1/model")
     suspend fun getModelInfo(
         @Body request: ModelInfoRequest
     ): ModelInfoResponse

@@ -2,6 +2,52 @@ package com.francescoalessi.parla.api.generate
 
 import kotlinx.serialization.Serializable
 
+
+@Serializable
+data class GenerateRequest(
+    val prompt: String = "",
+    //val max_new_tokens: Int = 1024,
+    val max_tokens: Int = 4096,
+    val temperature: Double = 0.44,
+    val top_p: Double = 1.0,
+    val typical_p: Double = 1.0,
+    val min_p: Double = 0.0,
+    val repetition_penalty: Double = 1.15,
+    val frequency_penalty: Double = 0.0,
+    val presence_penalty: Double = 0.0,
+    val top_k: Int = 0,
+    val min_length: Int = 0,
+    val min_tokens: Int = 0,
+    val num_beams: Int = 1,
+    val length_penalty: Int = 1,
+    val early_stopping: Boolean = false,
+    val add_bos_token: Boolean = true,
+    val stop: List<String> = listOf(),
+    val truncation_length: Int = 8192,
+    val ban_eos_token: Boolean = false,
+    val skip_special_tokens: Boolean = true,
+    val top_a: Int = 0,
+    val tfs: Int = 1,
+    val epsilon_cutoff: Int = 0,
+    val eta_cutoff: Int = 0,
+    val mirostat_mode: Int = 0,
+    val mirostat_tau: Int = 5,
+    val mirostat_eta: Double = 0.1,
+    val custom_token_bans: String = "",
+    val legacy_api: Boolean = false,
+    val repetition_penalty_range: Int = 0,
+    val encoder_repetition_penalty: Int = 1,
+    val no_repeat_ngram_size: Int = 0,
+    val penalty_alpha: Int = 0,
+    val temperature_last: Boolean = true,
+    val do_sample: Boolean = true,
+    val seed: Int = -1,
+    val guidance_scale: Double = 1.0,
+    val negative_prompt: String = "",
+    val grammar_string: String = "",
+    val stream: Boolean = false
+)
+/*
 @Serializable
 data class GenerateRequest(
     val prompt: String = "",
@@ -37,4 +83,4 @@ data class GenerateRequest(
     val mirostat_tau: Int = 5,
     val mirostat_eta: Double = 0.1,
     val use_mancer: Boolean = false
-)
+)*/
